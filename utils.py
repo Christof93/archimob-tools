@@ -1,7 +1,7 @@
 import codecs
 try:
         from lxml import etree
-except:
+except ImportError:
         import xml.etree.cElementTree as etree
         
 MANUALLY_POS_TAGGED=["1007.xml", "1048.xml", "1063.xml", "1198_1.xml", \
