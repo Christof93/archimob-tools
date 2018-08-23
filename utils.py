@@ -1,4 +1,5 @@
 import codecs
+import copy
 try:
         from lxml import etree
 except ImportError:
@@ -21,7 +22,7 @@ def get_utterance_elements(element_tree):
         return element_tree.findall(".//{"+namespace+"}u")
         
 def find_word(elem_id,element_tree):
-        """find an word element by its id"""
+        """find a word element by its id"""
         namespace=element_tree.getroot().nsmap[None]
         return element_tree.find(".//{"+namespace+"}w[@{http://www.w3.org/XML/1998/namespace}id='"+elem_id+"']")
 
@@ -35,11 +36,17 @@ def get_id(elem):
         return elem.attrib["{http://www.w3.org/XML/1998/namespace}id"]
         
 def replace_content(xml_doc, ref_xml_doc):
-        """replace all utterances in a document with utteraces fromm another document"""
-        for utterance in xml_doc.iter("{"+get_namespace(xml_doc)+"}u"):
-                utterance=find_utterance(get_id(utterance),ref_xml_doc)
-        
-        return change_tree
+        """replace all utterances in a document with utterances from another document"""
+        new_doc = copy.deepcopy(xml_doc)
+        d_ids = []
+        body = new_doc.find(".//{"+get_namespace(xml_doc)+"}body")
+        for utterance in new_doc.iter("{"+get_namespace(new_doc)+"}u"):
+                d_ids.append( get_id(utterance))
+                body.remove(utterance)
+         
+        for d_id in d_ids:
+            body.append(copy.deepcopy(find_utterance(d_id,ref_xml_doc)))
+        return new_doc
 
 def make_empty_doc(title,release="1.0"):
         skeleton="""<TEI xmlns="http://www.tei-c.org/ns/1.0">
