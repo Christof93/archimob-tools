@@ -10,23 +10,26 @@ functions:
   
   
  - **get_word_elements(tree)**
- 
+  return all the word elements in the tree
  
  - **get_utterance_elements(tree)**
+   return all the utterance elements in the tree
  
  
  - **find_word(elem_id,element_tree)**
+   return a word given its id and the tree.
  
  
  - **find_utterance(elem_id,element_tree)**
- 
+  return an utterance given its id and the tree
  
  - **get_id(elem)**
+  return the id of an element
  
  
  - **replace_content(xml_doc, ref_xml_doc)**
  
-    replace all utterances in a document with utterances from another document. Takes element trees as input.
+    replace all utterances in a document with utterances from another version of the same document. Takes element trees as input.
     
     
  - **make_empty_doc(title,release="1.0")**
