@@ -6,24 +6,30 @@ Contains various useful functions to work with the Archimob corpus.
 
 functions:
  - **get_namespace(tree)**
+ 
   get the default namespace of the archimob tree, parsed from archimob xml file. (Should be http://www.tei-c.org/ns/1.0)
   
   
  - **get_word_elements(tree)**
+ 
   return all the word elements in the tree
  
  - **get_utterance_elements(tree)**
+ 
    return all the utterance elements in the tree
  
  
  - **find_word(elem_id,element_tree)**
+ 
    return a word given its id and the tree.
  
  
  - **find_utterance(elem_id,element_tree)**
+ 
   return an utterance given its id and the tree
  
  - **get_id(elem)**
+ 
   return the id of an element
  
  
