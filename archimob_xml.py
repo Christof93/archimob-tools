@@ -8,8 +8,9 @@ import json
     
 class XML_mod:
 	"""Class to handle modifications in xml files of the Archimob corpus"""
-	def __init__(self,xmlfile):
+	def __init__(self,xmlfile,verbose=False):
 		self.filename=xmlfile
+		self.verbose=verbose
 		self.tree=ET.parse(xmlfile)
 		self.namespace=self.tree.getroot().nsmap[None]
 		self.filenum= re.search(r'\d{4}', self.filename.split("/")[-1]).group(0)
@@ -116,8 +117,9 @@ class XML_mod:
 			update= self.find_word(getid(orig),update_tree)
 			if update!=None:
 				if orig.text != update.text or orig.attrib != update.attrib:
-					print getid(orig)
-					print ET.tostring(orig),"changed to:", ET.tostring(update)
+					if self.verbose:
+						print getid(orig)
+						print ET.tostring(orig),"changed to:", ET.tostring(update)
 			else:
 				print getid(orig), "not found in new file!"
 
@@ -128,15 +130,35 @@ class XML_mod:
 		for change in changes:
 			if change["doc"]==self.filename.split("/")[-1]:
 				node = self.find_word(change["id"])
-				print ET.tostring(node)
-				print "changed to:"
+				if node is None:
+					print "WARNING couldn't find", change["id"],"in",change["doc"]
+					continue
+				if self.verbose:
+					print "-"*100
+					print ET.tostring(node)
+					print "changed to:"
 				for key in change["changes"]:
 					if key=="text":
 						node.text=change["changes"]["text"]
 					else:
 						node.attrib[key]=change["changes"][key]
-				print ET.tostring(node)
+				if self.verbose:
+					print ET.tostring(node)
 		
+	def replace_all(self, old_new_list):
+		"""replace characters or strings in all elements text. 
+		Input: a dictionary with the strings to replace and the new strings
+		{old:new,old:new,...}"""
+		for word in self.get_word_elements():
+			for occurence,new_string in old_new_list:
+				if occurence in word.text:
+					if self.verbose:
+						print "-"*100
+						print word.text,"\nchanged to:"
+					word.text = word.text.replace(occurence,new_string)
+					if self.verbose:
+						print word.text
+
 
 	def add_transcriptor(self,metafile):
 		"""add a transcriptor tag under <publicationStmt> to the file"""
@@ -150,7 +172,10 @@ class XML_mod:
 				metainfodict[ID]={descript[i].replace(" ",""):v for i,v in enumerate(values)}
 		pub=self.tree.find(".//{"+self.namespace+"}publicationStmt")
 		transcr=ET.SubElement(pub,"transcriptor")
-		print metainfodict[self.filenum]["Transcriptor"]
+		if self.verbose:
+			print "-"*100
+			print "added transcriptor tag:"
+			print metainfodict[self.filenum]["Transcriptor"]
 		transcr.text=metainfodict[self.filenum]["Transcriptor"]
 	
 	def add_normalizations(self,orig_file_path,norm_file_path,\
@@ -215,8 +240,10 @@ class XML_mod:
 			
 		with codecs.open(filename,"w") as out_xml:
 			out_xml.write(s)
-			
-		print "saved to:",filename
+		if self.verbose:
+			print "#"*100
+			print "file saved to:",filename
+			print "#"*100
 
 if __name__=="__main__":
     mod=XML_mod("ArchiMob_Release1_new/XML/Content/1055.xml")
