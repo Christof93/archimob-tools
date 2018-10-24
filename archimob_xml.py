@@ -248,7 +248,7 @@ class XML_mod:
 			w.attrib["normalised"]=norm
 			
 	def add_normalizations_from_vertical(self, vertical_file_path,\
-		replace_uniq=True, unique_filepath="unique_normalizations.tsv"):
+		replace_uniq=False, unique_filepath="unique_normalizations.tsv"):
 		""""""
 		normalizations=[]
 		original=[]
