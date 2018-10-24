@@ -133,12 +133,15 @@ class XML_mod:
 			else:
 				print getid(orig), "not found in new file!"
 
-	def get_updates_from_json(self,json_file):
+	def get_updates_from_json(self,json_input):
 		"""read a json file in archimob change format and apply the changes to the tree."""
 		changes=[]
-		with codecs.open(json_file,"r","utf-8") as change_file:
-			changes=json.load(change_file)
-		for change in changes:
+                if type(json_input)==str:
+		        with codecs.open(json_input,"r","utf-8") as change_file:
+			        changes = json.load(change_file)
+                else:
+                        changes = json_input
+                for change in changes:
 			if change["doc"]==self.filename.split("/")[-1]:
 				node = self.find_word(change["id"])
 				if node is None:
