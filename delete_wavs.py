@@ -4,13 +4,13 @@ import xml.etree.cElementTree as ET
 import codecs
 import os
 
-files = sorted(os.listdir("Archimob_Release_1/XML/Content") )
+files = sorted(os.listdir("Archimob_Release_2/") )
 loeschliste = []
 neuedatei = open('anonymization_deletion.txt', 'w')
 
 for file in files:
         if file.endswith(".xml"):
-                arbeitsdatei = ET.parse("Archimob_Release_1/XML/Content/" + file)
+                arbeitsdatei = ET.parse("Archimob_Release_2/" + file)
                 root = arbeitsdatei.getroot()
                 for utterance in root.iter('{http://www.tei-c.org/ns/1.0}u'):
                         ut_id = (utterance.attrib['start'].split("#")[1]+".wav").replace("-","_")
